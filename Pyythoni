@@ -1,0 +1,186 @@
+import json
+import requests
+from tkinter import *
+import serial
+import threading
+from PIL import Image, ImageTk
+import numpy
+import time
+from datetime import datetime
+
+
+
+
+root = Tk()
+root.geometry("480x320")
+root.title("Weather")
+root.configure(bg='white')
+
+ser = serial.Serial('COM10', 9600)
+
+"""
+def tick():
+    time_string=time.strftime("%H:%M:%S")
+    clock.config(text=time_string)
+    clock.after(200,tick)
+"""
+
+
+
+
+
+lable_0 = Label(root,text="Weather",width = 20,bg='white',font=("bold",20),fg='brown')
+lable_0.place(x=80, y=10)
+
+lable_2 = Label(root,text="Temp:",width = 20,bg='white',font=("bold",10),fg='blue')
+lable_2.place(x=240,y=220)
+
+lable_3 = Label(root,text="paine:",width = 20,bg='white',font=("bold",10),fg='blue')
+lable_3.place(x=240,y=240)
+
+lable_5 = Label(root,text="Desc:",width = 20,bg='white',font=("bold",10),fg='blue')
+lable_5.place(x=240,y=260)
+
+lable_6 = Label(root,text="Humi:",width = 20,bg='white',font=("bold",10),fg='blue')
+lable_6.place(x=240,y=280)
+
+lable_temp = Label(root,text="",width = 5,bg='white',font=("bold",10),fg='blue')
+lable_temp.place(x=350,y=220)
+
+lable_pres = Label(root,text="",width = 5,bg='white',font=("bold",10),fg='blue')
+lable_pres.place(x=350,y=240)
+
+lable_humi = Label(root,text="",width = 5,bg='white',font=("bold",10),fg='blue')
+lable_humi.place(x=350,y=280)
+
+lable_desc = Label(root,text="",width = 12,bg='white',font=("bold",10),fg='blue')
+lable_desc.place(x=350,y=260)
+
+lable_lamp = Label(root,text="",width = 5,bg='white',font=("bold",10),fg='blue')
+lable_lamp.place(x=100,y=220)
+
+lable_pain = Label(root,text="",width = 5,bg='white',font=("bold",10),fg='blue')
+lable_pain.place(x=100,y=240)
+
+lable_pain = Label(root,text="",width = 5,bg='white',font=("bold",10),fg='blue')
+lable_pain.place(x=100,y=240)
+
+lable_olut = Label(root,text="",width = 5,bg='white',font=("bold",10),fg='blue')
+lable_olut.place(x=100,y=280)
+
+lable_7 = Label(root,text="Temp:",width = 20,bg='white',font=("bold",10),fg='blue')
+lable_7.place(x=40,y=220)
+
+lable_8 = Label(root,text="paine:",width = 20,bg='white',font=("bold",10),fg='blue')
+lable_8.place(x=40,y=240)
+
+lable_9 = Label(root,text="Humi:",width = 20,bg='white',font=("bold",10),fg='blue')
+lable_9.place(x=40,y=260)
+
+lable_arduino = Label(root, text="", width=5, bg="white", font=("bold", 10), fg="blue")
+lable_arduino.place(x=150, y=220)
+#lable_arduino.configure(text=ser.readline())
+
+lable_arduino1 = Label(root, text="", width=5, bg="white", font=("bold", 10), fg="blue")
+lable_arduino1.place(x=150, y=240)
+#lable_arduino1.configure(text=ser.readline())
+
+lable_arduino2 = Label(root, text="", width=5, bg="white", font=("bold", 10), fg="blue")
+lable_arduino2.place(x=150, y=260)
+#lable_arduino2.configure(text=ser.readline())
+
+
+def getTemp():
+
+    api_key = "7afafccea68112d8e659399a08d54491"
+    base_url = "https://api.openweathermap.org/data/2.5/weather?"
+    city_name = "oulu"
+    complete_url = base_url+"appid="+api_key+"&q="+city_name
+
+
+
+
+    response = requests.get(complete_url)
+    x=response.json()
+
+    if["cod"] !='404':
+        y = x["main"]
+        current_temprature = y["temp"]
+        current_pressure = y["pressure"]
+        current_humidity = y["humidity"]
+
+        z = x["weather"]
+        weather_description = z[0]["description"]
+
+        lable_pres.configure(text=current_pressure)
+        lable_temp.configure(text=current_temprature)
+        lable_desc.configure(text=weather_description)
+        lable_humi.configure(text=current_humidity)
+
+
+
+    else:
+        lable_pres.configure(text="Err")
+        lable_temp.configure(text="Err")
+        lable_temp.configure(text="Err")
+        lable_humi.configure(text="Err")
+
+
+
+        while True:
+            rcv = port.readline()
+            print(rcv)
+
+Button(root,text="Submit",width=10,bg='brown',fg='white',command=getTemp).place(x=300,y=170)
+
+def ardu():
+    threading.Timer(2.0, ardu).start()
+    data=str(ser.readline())
+    print (data)
+
+    if "a" in data:
+        lampoo = ser.readline()
+        lable_arduino.configure(text=lampoo)
+
+    if "b" in data:
+        painee = ser.readline()
+        lable_arduino1.configure(text=painee)
+
+    if "c" in data:
+        kosteuss = ser.readline()
+        lable_arduino2.configure(text=kosteuss)
+
+ardu()
+
+def close_window():
+    root.destroy()
+
+
+Button(root, text="sulje", width=10, bg='brown', fg='white', command=close_window).place(x=105, y=170)
+
+
+
+
+mainloop()
+""""
+while True:
+    while (ser.inWaiting()==0):
+        pass
+    serArray = [2000]
+    serString = ser.readline()
+    serArray = serString.split(',')
+    lamp = float(serArray[0])
+    pain = float(serArray[1])
+    kost = float(serArray[2])
+    lampoo.append(lamp)
+    painee.append(pain)
+    kosteuss.append(kost)
+    ardu()
+    root.mainloop()
+    cnt = cnt + 1
+    if (cnt > 50):
+        lampoo.pop(0)
+        kosteuss.pop(0)
+        painee.pop(0)
+
+"""
